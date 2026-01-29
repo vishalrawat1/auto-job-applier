@@ -4,34 +4,41 @@ import React, { useState } from "react";
 import Link from "next/link";
 
 function Signup() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [phone, setPhone] = useState("");
-  const [location, setLocation] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const [formdata , setformdata] = useState({
+    name:"",
+    email:"",
+    password:"",
+    phone:"",
+    location:"",
+    confirmPassword:"",
+  })
+  const handleChange= (e:React.ChangeEvent<HTMLInputElement>)=>{
+    setformdata({...formdata , [e.target.name]: e.target.value})
+
+  }
+  const handleSubmit = async(e:React.FormEvent<HTMLFormElement>)=>{
     e.preventDefault();
     setIsLoading(true);
-    
-    // Basic validation
-    if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+    try {
+      const response = await fetch("http://localhost:5050/router/signup",
+        {
+          method:"POST",
+          headers:{
+            "Content-Type":"application/json"
+          },
+          body:JSON.stringify(formdata)
+        }
+
+
+      ) 
+    } catch (error) {
+      console.error(error);
+    } finally {
       setIsLoading(false);
-      return;
     }
-
-    console.log("Signing up with:", { name, email, phone, location, password });
-
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      alert("Signup functionality coming soon!");
-    }, 1000);
-  };
-
+  } 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
@@ -61,8 +68,8 @@ function Signup() {
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                 placeholder="Full Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={formdata.name}
+                onChange={handleChange}
               />
             </div>
             <div className="mb-4">
@@ -77,8 +84,8 @@ function Signup() {
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                 placeholder="Email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={formdata.email}
+                onChange={handleChange}
               />
             </div>
             <div className="mb-4">
@@ -93,8 +100,8 @@ function Signup() {
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                 placeholder="Phone Number"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                value={formdata.phone}
+                onChange={handleChange}
               />
             </div>
             <div className="mb-4">
@@ -108,8 +115,8 @@ function Signup() {
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                 placeholder="Location"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
+                value={formdata.location}
+                onChange={handleChange}
               />
             </div>
             <div className="mb-4">
@@ -124,8 +131,8 @@ function Signup() {
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                 placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={formdata.password}
+                onChange={handleChange}
               />
             </div>
             <div>
@@ -134,14 +141,14 @@ function Signup() {
               </label>
               <input
                 id="confirm-password"
-                name="confirm-password"
+                name="confirmPassword"
                 type="password"
                 autoComplete="new-password"
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                 placeholder="Confirm password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                value={formdata.confirmPassword}
+                onChange={handleChange}
               />
             </div>
           </div>
