@@ -1,4 +1,5 @@
-import AdminModel from "../model/Adminmodel.js";
+import AdminModel from "../model/adminmodel.js";
+import bcrypt from "bcrypt";
 
 const getinfo = async (req, res) => {
   try {
@@ -14,14 +15,15 @@ const getinfo = async (req, res) => {
 
 const postinfo = async (req, res) => {
   try {
-    const { name, email, phone, location } = req.body;
+    const { name, email, phone, location, password } = req.body;
 
     if (
-      !name || !email || !phone || !location ||
+      !name || !email || !phone || !location || !password ||
       name.trim() === "" ||
       email.trim() === "" ||
       phone.trim() === "" ||
-      location.trim() === ""
+      location.trim() === "" ||
+      password.trim() === ""
     ) {
       return res.status(400).json({
         message: "All fields are required"
@@ -35,11 +37,14 @@ const postinfo = async (req, res) => {
       });
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const admin = new AdminModel({
       name,
       email,
       phone,
-      location
+      location,
+      password: hashedPassword
     });
 
     await admin.save();

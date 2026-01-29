@@ -1,5 +1,5 @@
 import { defaultMaxListeners } from "node:events";
-import Basicinfo from "../Model/Basicinfo";
+import Basicinfo from "../Model/Basicinfo.js";
 // getqna , postqna , updateqna , deleteqna
 
 const postqna = async(req , res)=>{

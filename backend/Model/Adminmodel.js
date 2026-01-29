@@ -1,14 +1,27 @@
   import mongoose from "mongoose";
 
   const adminmodel = mongoose.Schema({
-    name: String,
+    name: {
+      type: String,
+      required: true
+    },
     email: {
       type: String,
       unique: true,
       required: true
     },
-    phone: String,
-    location: String
+    password: {
+      type: String,
+      required: true
+    },
+    phone: {
+      type: String,
+      required: true
+    },
+    location: {
+      type: String,
+      required: true
+    }
   });
 
   const AdminModel = mongoose.model("adminmodel", adminmodel);
