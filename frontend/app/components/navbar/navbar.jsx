@@ -1,8 +1,39 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Signin from "../signin/signin";
 export default function Navbar() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    // Check initial user
+    const checkUser = () => {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      } else {
+        setUser(null);
+      }
+    };
+    checkUser();
+
+    // Listen for storage events (login/logout from other tabs or same tab)
+    const handleStorageChange = () => checkUser();
+    window.addEventListener("storage", handleStorageChange);
+    
+    // Custom event for same-tab updates
+    return () => {
+        window.removeEventListener("storage", handleStorageChange);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+    window.dispatchEvent(new Event("storage"));
+    window.location.href = "/";
+  };
+
   return (
     <nav className="fixed w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -62,9 +93,21 @@ export default function Navbar() {
               </svg>
             </div>
             
-            <button className="hidden md:flex items-center justify-center px-4 py-2 border border-transparent rounded-full shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all active:scale-95">
-              <Link href="/signin">Sign In</Link>
-            </button>
+            {user ? (
+                <div className="flex items-center gap-4">
+                    <span className="text-gray-700 font-medium">Hello, {user.name}</span>
+                    <button 
+                        onClick={handleLogout}
+                        className="hidden md:flex items-center justify-center px-4 py-2 border border-transparent rounded-full shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all active:scale-95"
+                    >
+                        Sign Out
+                    </button>
+                </div>
+            ) : (
+                <button className="hidden md:flex items-center justify-center px-4 py-2 border border-transparent rounded-full shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all active:scale-95">
+                    <Link href="/signin">Sign In</Link>
+                </button>
+            )}
           </div>
         </div>
       </div>

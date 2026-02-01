@@ -4,8 +4,8 @@ const basicinfo = {
     userId:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"Admin",
-        required:true,
-        unique:true
+        required:false,
+        unique:false
     },
     hobbies: {
         type: String,
@@ -68,3 +68,4 @@ const basicinfo = {
 
 const Basicinfo = mongoose.model("basicinfo" , basicinfo);
 export default Basicinfo;
+

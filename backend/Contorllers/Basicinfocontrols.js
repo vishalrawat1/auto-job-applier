@@ -4,11 +4,12 @@ import Basicinfo from "../Model/Basicinfo.js";
 
 const postqna = async(req , res)=>{
     try{
-        const {hobbies , achievements , isArmyVeteran , isPhysicallyDisabled , disabilityDetails , gender , nationality , workAuthorization , willingToRelocate , criminalRecord , additionalInformation} = req.body;
-        if(!disabilityDetails || !nationality || !workAuthorization){
+        const {userId, hobbies , achievements , isArmyVeteran , isPhysicallyDisabled , disabilityDetails , gender , nationality , workAuthorization , willingToRelocate , criminalRecord , additionalInformation} = req.body;
+        if(!userId || !nationality || !workAuthorization){
             return res.status(400).json({message:"all fields are required"});
         }
         const basicinfo = new Basicinfo({
+            userId,
             hobbies,
             achievements,
             isArmyVeteran,

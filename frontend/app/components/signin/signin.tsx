@@ -1,24 +1,49 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Signup from "../signup/signup";
 
 function Signin() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  
+  // const user = await AdminModel.findOne({email})
+  // if(!user){
+  //   return res.status(404).json({message:"User not found"})
+  // }
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    // TODO: Implement actual login logic here
-    console.log("Logging in with:", email, password);
-    
-    // Simulate API call
-    setTimeout(() => {
+
+    try {
+      const response = await fetch("http://localhost:5050/router/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await response.json();
+
+      if (response.ok) {
+        // Save user to localStorage
+        localStorage.setItem("user", JSON.stringify(data.user));
+        // Force a page refresh/update for the navbar to notice the change (simple way)
+        window.dispatchEvent(new Event("storage"));
+        router.push("/");
+      } else {
+        alert(data.message || "Login failed");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("An error occurred during login");
+    } finally {
       setIsLoading(false);
-      alert("Login functionality coming soon!");
-    }, 1000);
+    }
   };
 
   return (
