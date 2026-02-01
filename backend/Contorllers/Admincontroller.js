@@ -1,5 +1,6 @@
 import AdminModel from "../model/adminmodel.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const getinfo = async (req, res) => {
   try {
@@ -10,6 +11,43 @@ const getinfo = async (req, res) => {
     return res.status(500).json({
       message: "Internal server error"
     });
+  }
+};
+
+const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password are required" });
+    }
+
+    const user = await AdminModel.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    // Return user info (excluding password)
+    const userInfo = {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      location: user.location
+    };
+
+    return res.status(200).json({
+      message: "Login successful",
+      user: userInfo
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -68,4 +106,4 @@ const postinfo = async (req, res) => {
   }
 };
 
-export { getinfo, postinfo };
+export { getinfo, postinfo, login };
