@@ -1,14 +1,33 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { json } from "zod";
 
 const Home = () => {
   const [data, setData] = React.useState<any[]>([]);
+  const [ user , setuser] = useState<any[]>([]);
+  useEffect(() => {
+    const userid = localStorage.getItem("user");
+
+    if (userid) {
+      setuser(JSON.parse(userid));
+    } else {
+      setuser(null);
+    }
+    console.log(userid);
+    
+  }, []);
+  
+  
 
   React.useEffect(() => {
     fetch("http://localhost:5050/router/getinfo")
       .then((res) => res.json())
-      .then((data) => setData(data))
+      .then((data: any[]) => {
+        const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+        const userId = storedUser.id || storedUser;
+        setData(data.filter((item) => item.id === userId));
+      })
       .catch((err) => console.log(err));
   }, []);
 
