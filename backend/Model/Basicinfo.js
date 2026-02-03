@@ -6,7 +6,8 @@ const basicinfo = {
         ref:"Admin",
         required:false,
         unique:false
-    },
+    },    
+    
     hobbies: {
         type: String,
         required: false

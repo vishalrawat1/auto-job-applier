@@ -2,22 +2,25 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Signin from "../signin/signin";
+
 export default function Navbar() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Check initial user
+
     const checkUser = () => {
       const storedUser = localStorage.getItem("user");
-      if (storedUser) {
+      if (storedUser)  {
         setUser(JSON.parse(storedUser));
       } else {
         setUser(null);
       }
     };
+  
     checkUser();
-
+    
     // Listen for storage events (login/logout from other tabs or same tab)
+
     const handleStorageChange = () => checkUser();
     window.addEventListener("storage", handleStorageChange);
     
@@ -34,7 +37,7 @@ export default function Navbar() {
     window.location.href = "/";
   };
 
-  return (
+  return (    
     <nav className="fixed w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
@@ -94,6 +97,7 @@ export default function Navbar() {
             </div>
             
             {user ? (
+              
                 <div className="flex items-center gap-4">
                     <span className="text-gray-700 font-medium">Hello, {user.name}</span>
                     <button 
@@ -101,6 +105,11 @@ export default function Navbar() {
                         className="hidden md:flex items-center justify-center px-4 py-2 border border-transparent rounded-full shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all active:scale-95"
                     >
                         Sign Out
+                    </button>
+                    <button 
+                        className="hidden md:flex items-center justify-center px-4 py-2 border border-transparent rounded-full shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all active:scale-95"
+                    >
+                        <Link href="/fill-information">Fill Information</Link>
                     </button>
                 </div>
             ) : (

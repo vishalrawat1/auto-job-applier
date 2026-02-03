@@ -15,6 +15,7 @@ function Signin() {
   // if(!user){
   //   return res.status(404).json({message:"User not found"})
   // }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -30,13 +31,15 @@ function Signin() {
       const data = await response.json();
 
       if (response.ok) {
-        // Save user to localStorage
+
         localStorage.setItem("user", JSON.stringify(data.user));
-        // Force a page refresh/update for the navbar to notice the change (simple way)
+        
         window.dispatchEvent(new Event("storage"));
         router.push("/");
       } else {
+
         alert(data.message || "Login failed");
+        
       }
     } catch (error) {
       console.error("Login error:", error);
