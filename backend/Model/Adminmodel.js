@@ -21,6 +21,10 @@
     location: {
       type: String,
       required: true
+    },
+    basicinfo: {
+      type: Boolean,
+      default: false
     }
   });
 

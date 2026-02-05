@@ -105,5 +105,27 @@ const postinfo = async (req, res) => {
     });
   }
 };
+const updatebasicinfo = async (req, res) => {
+  try {
+    const { name, email, phone, location, password ,basicinfo } = req.body;
+    //seting basicfor true onyl by calling patch as of now 
+    const admin = await AdminModel.findOne({ email });
+    if (!admin) {
+      return res.status(404).json({
+        message: "Admin not found"
+      });
+    }
+    admin.basicinfo = true;
+    await admin.save();
+    return res.status(200).json({
+      message: "Basic info updated successfully",
+      admin
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
 
-export { getinfo, postinfo, login };
+
+export { getinfo, postinfo, login , updatebasicinfo }
