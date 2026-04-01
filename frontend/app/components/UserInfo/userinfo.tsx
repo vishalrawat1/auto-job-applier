@@ -1,5 +1,6 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useUserInfo } from '../../hooks/useUserInfo';
 
 const Section = ({ title, children }: { title: string, children: React.ReactNode }) => (
     <div className="bg-gray-50 p-4 rounded-md shadow-sm">
@@ -17,7 +18,7 @@ const Field = ({ label, value }: { label: string, value: any }) => (
     </div>
 );
 
-const LinkField = ({ label, value }: { label: string, value: string }) => (
+const LinkField = ({ label, value }: { label: string, value: string | undefined }) => (
     <div className="flex flex-col sm:flex-row sm:justify-between border-b border-gray-200 last:border-0 pb-2 last:pb-0">
         <span className="font-medium text-gray-600">{label}:</span>
         {value ? (
@@ -31,47 +32,7 @@ const LinkField = ({ label, value }: { label: string, value: string }) => (
 );
 
 const UserInfoComponent = () => {
-    const [userInfo, setUserInfo] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
-
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const userStr = localStorage.getItem("user");
-                if (!userStr) {
-                    setError("User not logged in");
-                    setLoading(false);
-                    return;
-                }
-                const user = JSON.parse(userStr);
-                const userId = user._id;
-
-                const response = await fetch('http://localhost:5050/router1/getqna');
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                
-                // Filter the data for the current user
-                // Assuming data is an array of basic info objects
-                const currentUserInfo = data.find((info: any) => info.userId === userId);
-                
-                if (currentUserInfo) {
-                    setUserInfo(currentUserInfo);
-                } else {
-                    setError("No detailed information found for this user.");
-                }
-            } catch (err: any) {
-                console.error("Failed to fetch user data:", err);
-                setError(err.message || "Failed to load data");
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchUserData();
-    }, []);
+    const { userInfo, loading, error } = useUserInfo();
 
     if (loading) return <div className="p-8 text-center text-gray-600">Loading user information...</div>;
     if (error) return <div className="p-8 text-center text-red-600">Error: {error}</div>;
